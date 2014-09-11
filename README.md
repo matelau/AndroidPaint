@@ -1,7 +1,7 @@
-# ￼Mobile Application Programming: Android!
+# ￼Mobile Application Programming: Android! #
 CS4952 Fall 2013!
-Project 1!
-Due: 11:59PM Monday, September 22nd! #
+#Project 1! #
+Due: 11:59PM Monday, September 22nd!
 ------------------------------------------------------------------
 Create a simple finger painting application that includes a dynamic paint-mixing painter’s palette. The top the of the screen is a paint area where the user can draw pictures using their finger, using the selected color of paint from the palette. The bottom of the screen shows a painter’s palette with paints. One paint is the selected paint, selected by the user by touching a finger on the screen over it, and is indicated with an outline, glow, or other highlighting mechanism. A paint may be combined with another paint to form a new paint by dragging it on top of another paint. This causes a new paint to be dynamically added to the palette which is a combination of the two paints. This new paint then should then be selected automatically so it is the selected paint color.!
 Make sure to test your application on both a phone-type simulator (e.g. Nexus 4) and a tablet- type simulator (e.g. Nexus 7) in both portrait and landscape orientations to ensure that the UI is both functional and reasonable-looking on both device types and both orientations. !
