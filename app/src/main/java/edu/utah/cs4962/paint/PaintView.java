@@ -25,6 +25,7 @@ public class PaintView extends View {
         public void onSplotchTouched(PaintView v);
     }
 
+    /* Constructor */
     public PaintView(Context context) {
         super(context);
     }
@@ -67,6 +68,12 @@ public class PaintView extends View {
 
         return super.onTouchEvent(event);
     }
+
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
+//        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+//    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
