@@ -20,15 +20,20 @@ public class PaintView extends View {
     float _radius;
     OnSplotchTouchListener _onSplotchTouchListener = null;
 
+
+    /* Constructor */
+    public PaintView(Context context) {
+        super(context);
+        setMinimumWidth(50);
+        setMinimumHeight(50);
+    }
+
     public interface OnSplotchTouchListener
     {
         public void onSplotchTouched(PaintView v);
     }
 
-    /* Constructor */
-    public PaintView(Context context) {
-        super(context);
-    }
+
 
 
 
@@ -69,10 +74,47 @@ public class PaintView extends View {
         return super.onTouchEvent(event);
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-//        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
-//    }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        // what I think width/height should be
+        int widthSpec = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSpec = MeasureSpec.getSize(heightMeasureSpec);
+
+        //start small and try to grow
+        int width = getSuggestedMinimumWidth();
+        int height = getSuggestedMinimumHeight();
+
+        if(widthMode == MeasureSpec.AT_MOST)
+            width = widthSpec;
+        if(heightMode == MeasureSpec.AT_MOST)
+            height = heightSpec;
+
+        if( widthMode == MeasureSpec.EXACTLY)
+        {
+            width = widthSpec;
+            height = width;
+        }
+
+        if( heightMode == MeasureSpec.EXACTLY)
+        {
+            height = heightSpec;
+            width = height;
+        }
+
+        //enforce squareness
+        if(width > height && widthMode != MeasureSpec.EXACTLY)
+            width = height;
+        if(height > width && heightMode != MeasureSpec.EXACTLY)
+            height = heightSpec;
+
+        // TODO: Respect padding
+        setMeasuredDimension(
+                resolveSizeAndState(width, widthMeasureSpec, width < getSuggestedMinimumWidth() ? MEASURED_STATE_TOO_SMALL : 0),
+                resolveSizeAndState(height, heightMeasureSpec,  height < getSuggestedMinimumHeight() ? MEASURED_STATE_TOO_SMALL : 0));
+    }
 
 
     @Override
@@ -88,19 +130,29 @@ public class PaintView extends View {
         Path blotPath = new Path();
         PointF center = new PointF(_contentRect.centerX(), _contentRect.centerY());
         _radius = Math.min(_contentRect.width() * 0.5f, _contentRect.height() * 0.5f);
-        int pointCount = 100;
-        for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
+        int pointCount = 350;
+        for (int pointIndex = 0; pointIndex < pointCount; pointIndex+=4)
         {
             PointF point = new PointF();
-//            float randomRadius = ((0.8f * (float) Math.random()* 0.2f) * radius);
-            _radius += (Math.random() - 0.5f) * 20.0f;
-            point.x = center.x + _radius* (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
+//            _radius += ((Math.random() - .5f) * 2.0f) * ((_contentRect.width()/2) - _radius);
+            point.x = center.x + _radius * (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
             point.y = center.y + _radius * (float) Math.sin((float) pointIndex / ((float) pointCount) *2*  Math.PI);
+
+            PointF control1 = new PointF();
+            float c1Radius = _radius + (float) ((Math.random() - .5) * 2.0f *20f);
+            control1.x = center.x + c1Radius * (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
+            control1.y = center.y + c1Radius * (float) Math.sin((float) pointIndex / ((float) pointCount) *2*  Math.PI);
+
+            PointF control2 = new PointF();
+            float c2Radius = _radius + (float) ((Math.random() - .5) * 2.0f * 20f) ;
+            control2.x = center.x + c2Radius * (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
+            control2.y = center.y + c2Radius * (float) Math.sin((float) pointIndex / ((float) pointCount) *2*  Math.PI);
 
             if (pointIndex == 0)
                 blotPath.moveTo(point.x, point.y);
             else
-                blotPath.lineTo(point.x, point.y);
+                blotPath.quadTo(control1.x, control2.y,  point.x, point.y);
+
         }
 
         Paint blotPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

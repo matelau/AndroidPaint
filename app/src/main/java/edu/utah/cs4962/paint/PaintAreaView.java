@@ -26,17 +26,16 @@ public class PaintAreaView extends View {
         super(context);
     }
 
+    // TODO: Implement onTouch to draw lines
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-
         Paint border = new Paint();
         border.setStrokeWidth(5.5f);
         border.setColor(Color.CYAN);
         border.setStyle(Paint.Style.STROKE);
         canvas.drawRect(0, 0, getWidth(), getHeight(), border);
-//        canvas.drawRect(_contentRect, border);
 
     }
 }

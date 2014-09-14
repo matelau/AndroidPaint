@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 public class PaintActivity extends Activity {
     PaintView _paintView;
     PaintAreaView _paintAreaView;
+    PaletteView _paleteView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,16 +26,14 @@ public class PaintActivity extends Activity {
 
         Display display = ((WindowManager) getBaseContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int rotation = display.getRotation();
-        //0 = horizontal
-
-
-
         _paintAreaView = new PaintAreaView(this);
+        _paleteView = new PaletteView(this);
 
 
         _paintView = new PaintView(this);
         _paintView.setPadding(30, 30, 30, 30);
         _paintView.setColor(Color.RED);
+        _paintView.setBackgroundColor(Color.BLACK);
         _paintView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,12 +44,12 @@ public class PaintActivity extends Activity {
         if(rotation  == 0 ){
             rootLayout.setOrientation(LinearLayout.VERTICAL);
             rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
-            rootLayout.addView(_paintView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
+            rootLayout.addView(_paleteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
         }
         else{
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
             rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
-            rootLayout.addView(_paintView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
+            rootLayout.addView(_paleteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
 
         }
 
