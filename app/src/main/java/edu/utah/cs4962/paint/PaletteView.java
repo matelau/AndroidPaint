@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ public class PaletteView extends ViewGroup {
     RectF _contentRect;
     ArrayList<Integer> paints;
 
+    //TODO: Look into Application.class to save state.
 
     public PaletteView(Context context){
         super(context);
@@ -58,7 +58,11 @@ public class PaletteView extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-        //TODO: implement
+        //TODO: implement iterate through all the children then report how big you need to be
+        // getChildAt() call measure, getChildCount()
+
+        final int cCount = getChildCount();
+
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         // what I think width/height should be
@@ -102,17 +106,17 @@ public class PaletteView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        final int children = getChildCount(), height = getMeasuredHeight();
-        for (int i = 0; i < children; i++) {
-            final View view = getChildAt(i);
-
-            if (view.getVisibility() != View.VISIBLE)
-                continue;
-
-            final int width = view.getMeasuredWidth();
-            view.layout(l, 0, l + width, height);
-            l += width;
-        }
+//        final int children = getChildCount(), height = getMeasuredHeight();
+//        for (int i = 0; i < children; i++) {
+//            final View view = getChildAt(i);
+//
+//            if (view.getVisibility() != View.VISIBLE)
+//                continue;
+//
+//            final int width = view.getMeasuredWidth();
+//            view.layout(l, 0, l + width, height);
+//            l += width;
+//        }
 
     }
 
