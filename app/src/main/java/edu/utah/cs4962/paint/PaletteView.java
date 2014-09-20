@@ -1,7 +1,10 @@
 package edu.utah.cs4962.paint;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -29,25 +32,27 @@ public class PaletteView extends ViewGroup {
 
     public PaletteView(Context context){
         super(context);
+        setWillNotDraw(false);
     }
 
-//    @Override
-//    protected void onDraw(Canvas canvas){
-//        //TODO: draw palette add paints
-//        _contentRect = new RectF(
-//                getPaddingLeft(),
-//                getPaddingTop(),
-//                (float) getWidth() - getPaddingRight(),
-//                (float) getHeight() - getPaddingBottom());
-//
-//        Paint palPaint = new Paint();
-//        palPaint.setColor(0xff8b4513); // brown
-//        palPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-//        float _radius = Math.min(_contentRect.width() * 0.5f, _contentRect.height() * 0.5f);
-//        PointF center = new PointF(_contentRect.centerX(), _contentRect.centerY());
-//        canvas.drawCircle(center.x, center.y, _radius, palPaint);
-//
-//    }
+    @Override
+    protected void onDraw(Canvas canvas){
+        super.onDraw(canvas);
+        //TODO: draw palette add paints
+        _contentRect = new RectF(
+                getPaddingLeft(),
+                getPaddingTop(),
+                (float) getWidth() - getPaddingRight(),
+                (float) getHeight() - getPaddingBottom());
+
+        Paint palPaint = new Paint();
+        palPaint.setColor(0xff8b4513); // brown
+        palPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        float _radius = Math.min(_contentRect.width() * 0.5f, _contentRect.height() * 0.5f);
+        PointF center = new PointF(_contentRect.centerX(), _contentRect.centerY());
+        canvas.drawOval(_contentRect, palPaint);
+
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){

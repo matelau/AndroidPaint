@@ -11,7 +11,11 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * Created by matelau on 9/3/14.
+ * A subclass of View that depicts a blob of paint of a particular color. Override
+ onDraw to draw the paint blob to fill the view, respecting the padding of the view. Allow the
+ paint to be highlighted using an outline or a glow effect by offering a boolean property “active”
+ that, when changed, causes the view to redraw itself, either adding or removing the highlight
+ effect.
  */
 public class PaintView extends View {
 
@@ -19,6 +23,7 @@ public class PaintView extends View {
     RectF _contentRect;
     float _radius;
     OnSplotchTouchListener _onSplotchTouchListener = null;
+    boolean _active = false;
 
 
     /* Constructor */
@@ -65,6 +70,9 @@ public class PaintView extends View {
         float distance = (float) Math.sqrt((circleCenterX - x) * (circleCenterX- x) + (circleCenterY - y) * (circleCenterY- y));
         if(distance < _radius){
             Log.i("Splotch", "Touch Inside Splotch!");
+            //redraw and highlight
+            this.onDraw(new Canvas());
+            _active = true;
             if (_onSplotchTouchListener != null)
                 _onSplotchTouchListener.onSplotchTouched(this);
         }
@@ -141,11 +149,11 @@ public class PaintView extends View {
             PointF control1 = new PointF();
             float c1Radius = _radius + (float) ((Math.random() - .5) * 2.0f *20f);
             control1.x = center.x + c1Radius * (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
-            control1.y = center.y + c1Radius * (float) Math.sin((float) pointIndex / ((float) pointCount) *2*  Math.PI);
+//            control1.y = center.y + c1Radius * (float) Math.sin((float) pointIndex / ((float) pointCount) *2*  Math.PI);
 
             PointF control2 = new PointF();
             float c2Radius = _radius + (float) ((Math.random() - .5) * 2.0f * 20f) ;
-            control2.x = center.x + c2Radius * (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
+//            control2.x = center.x + c2Radius * (float) Math.cos((float)pointIndex / ((float) pointCount) * 2* Math.PI);
             control2.y = center.y + c2Radius * (float) Math.sin((float) pointIndex / ((float) pointCount) *2*  Math.PI);
 
             if (pointIndex == 0)
@@ -153,9 +161,14 @@ public class PaintView extends View {
             else
                 blotPath.quadTo(control1.x, control2.y,  point.x, point.y);
 
-        }
 
+        }
         Paint blotPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        if(_active){
+//            blotPaint.
+//        }
+
+
         blotPaint.setColor(_color);
         canvas.drawPath(blotPath, blotPaint);
 
