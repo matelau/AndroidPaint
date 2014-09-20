@@ -52,6 +52,16 @@ public class PaletteView extends ViewGroup {
         PointF center = new PointF(_contentRect.centerX(), _contentRect.centerY());
         canvas.drawOval(_contentRect, palPaint);
 
+
+        // remove corner
+        _contentRect = new RectF(50,50,50,50);
+        Paint cornerPaint = new Paint();
+        cornerPaint.setColor(Color.BLACK);
+        cornerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        canvas.drawCircle(center.x+(_radius/1.3f), center.y-(_radius/(1.3f)),_radius/4, cornerPaint);
+
+
     }
 
     @Override
