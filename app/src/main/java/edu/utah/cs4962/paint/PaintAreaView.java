@@ -57,6 +57,8 @@ public class PaintAreaView extends View {
                     _doodles.get(i).drawDoodles(_canvas);
                 }
             }
+
+            PaintApplication.set_canvas(_canvas);
         }
         canvas.drawBitmap(_mBitmap, 0, 0, null);
     }

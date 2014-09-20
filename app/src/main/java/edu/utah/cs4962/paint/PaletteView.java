@@ -8,8 +8,10 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * A subclass of ViewGroup that overrides onDraw to draw a painter’s palette
@@ -27,8 +29,7 @@ import android.view.ViewGroup;
  */
 public class PaletteView extends ViewGroup {
     RectF _contentRect;
-
-    //TODO: Look into Application.class to save state.
+    PaintView _transformedView;
 
     public PaletteView(Context context){
         super(context);
@@ -36,9 +37,84 @@ public class PaletteView extends ViewGroup {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent event){
+        Log.i("PaletteView", "onInterceptTouchEvent - source: "+ event.getSource());
+        Float x = event.getX();
+        Float y = event.getY();
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
+            _transformedView = detectPaintTouched(x,y);
+            return false;
+        }
+        else if (event.getAction() == MotionEvent.ACTION_MOVE)
+        {
+            //TODO take account for swipes not on a paintView
+            //take control in onTouchEvent
+            return onTouchEvent(event);
+        }
+        else if(event.getAction() == MotionEvent.ACTION_UP)
+        {
+            return onTouchEvent(event);
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns the selected paint or null if x,y is not over a paint view
+     * @param x
+     * @param y
+     * @return
+     */
+    private PaintView detectPaintTouched(Float x, Float y){
+        int xTest = Math.round(x);
+        int yTest = Math.round(y);
+        //detect which child was touched
+        for(int i = 0; i < getChildCount(); i++) {
+            PaintView pv = (PaintView) getChildAt(i);
+            if (xTest > pv.getLeft() && x < pv.getRight() && yTest > pv.getTop() && yTest < pv.getBottom()) {
+                return (PaintView) getChildAt(i);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        Log.i("PaletteView", "onTouchEvent");
+        Float x = event.getX();
+        Float y = event.getY();
+
+
+        if(_transformedView != null && (event.getAction() == MotionEvent.ACTION_UP )){
+            // check if dragged on top of another paint
+            PaintView pv = detectPaintTouched(x,y);
+            if(pv != null){
+                int color1 = pv.getColor();
+                int color2 = _transformedView.getColor();
+                if(pv.getColor() != _transformedView.getColor()){
+                    //add color
+                    addColor(color1, color2);
+                    //remove pv and transformed
+                    Log.i("PaletteView", "onTouchEvent - Need to Add color");
+                    return true;
+                }
+                else{
+
+                    return false;
+                }
+
+            }
+
+        }
+        return false;
+
+
+    }
+
+    @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        //TODO: draw palette add paints
         _contentRect = new RectF(
                 getPaddingLeft(),
                 getPaddingTop(),
@@ -63,6 +139,7 @@ public class PaletteView extends ViewGroup {
 
 
     }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
@@ -93,9 +170,6 @@ public class PaletteView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        //getLeft() == l
-        Log.i("layout", "l:" + l + " getLeft(): " + getLeft());
-
         // see what measure the children came up with
         int childWidthMax = 0;
         int childHeightMax = 0;
@@ -119,8 +193,8 @@ public class PaletteView extends ViewGroup {
         for(int childIndex = 0; childIndex < getChildCount(); childIndex++)
         {
             double angle = (double) childIndex / (double)getChildCount() * 2.0 * Math.PI;
-            int childCenterX = (int) (layoutRect.centerX() + layoutRect.width() *  Math.cos(angle) * 0.5);
-            int childCenterY = (int) (layoutRect.centerY() + layoutRect.height() *  Math.sin(angle) * 0.5);
+            int childCenterX = (int) (layoutRect.centerX() + layoutRect.width() *  Math.cos(angle) * 0.4);
+            int childCenterY = (int) (layoutRect.centerY() + layoutRect.height() *  Math.sin(angle) * 0.4);
 
 
             View child = getChildAt(childIndex);
@@ -140,8 +214,46 @@ public class PaletteView extends ViewGroup {
 
     }
 
-    protected void addColor(int color){
-        //TODO: implement
+    /**
+     *
+     * @param color
+     * @param color2
+     */
+    protected void addColor(int color, int color2){
+        int r1, g1, b1, r2, g2, b2, r3, g3, b3;
+
+        r1 = Color.red(color);
+        g1 = Color.green(color);
+        b1 = Color.blue(color);
+        r2 = Color.red(color2);
+        g2 = Color.green(color2);
+        b2 = Color.blue(color2);
+
+        r3 = (r1+r2)/2;
+        g3 = (g1+g2)/2;
+        b3 = (b1+b2)/2;
+
+        PaintView pv = new PaintView(PaintApplication.getAppContext());
+        int aColor = Color.rgb(r3,g3,b3);
+        //store for rotation
+        PaintApplication.add_paintColor(aColor);
+        pv.setColor(aColor);
+        pv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundResource(android.R.drawable.list_selector_background);
+                int selected =((PaintView) v).getColor();
+                PaintApplication.set_selectedPaint(selected);
+            }
+        });
+
+        addView(pv);
+
+
+
+
+        Toast t = Toast.makeText(PaintApplication.getAppContext(), "color1: "+color+ " color2: "+color2, Toast.LENGTH_SHORT);
+        t.show();
 //        onLayout(true);
         invalidate();
     }
