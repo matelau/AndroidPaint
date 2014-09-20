@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -69,15 +68,15 @@ public class PaintView extends View {
 
         float distance = (float) Math.sqrt((circleCenterX - x) * (circleCenterX- x) + (circleCenterY - y) * (circleCenterY- y));
         if(distance < _radius){
-            Log.i("Splotch", "Touch Inside Splotch!");
+//            Log.i("Splotch", "Touch Inside Splotch!");
             //redraw and highlight
-            this.onDraw(new Canvas());
-            _active = true;
+//            this.onDraw(new Canvas());
+//            _active = true;
             if (_onSplotchTouchListener != null)
                 _onSplotchTouchListener.onSplotchTouched(this);
         }
-        else
-            Log.i("Paint_view", "Touch not in the circle");
+//        else
+////            Log.i("Paint_view", "Touch not in the circle");
 
         return super.onTouchEvent(event);
     }

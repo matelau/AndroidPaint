@@ -58,8 +58,6 @@ public class PaintActivity extends Activity {
                     v.setBackgroundResource(android.R.drawable.list_selector_background);
                     int duration = Toast.LENGTH_SHORT;
                     int selected =((PaintView) v).getColor();
-                    _paintAreaView.set_selectedPaint(selected);
-                    _paintAreaView.set_paintSelected(_paintSelected);
                     PaintApplication.set_selectedPaint(selected);
                     String text= "Paint Color: "+ selected +" paint selected: "+  _paintSelected;
                     Toast toast = Toast.makeText(PaintApplication.getAppContext(), text, duration);
