@@ -128,7 +128,7 @@ public class PaintActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
-        if(_paintAreaView != null && PaintApplication.get_canvas() != null)
+        if(PaintApplication.get_points().size() > 0)
         {
             _paintAreaView.draw(PaintApplication.get_canvas());
         }

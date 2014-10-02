@@ -48,8 +48,8 @@ public class PaintView extends View {
     /* Constructor */
     public PaintView(Context context) {
         super(context);
-        setMinimumWidth(50);
-        setMinimumHeight(50);
+        setMinimumWidth(75);
+        setMinimumHeight(75);
     }
 
     public interface OnSplotchTouchListener
