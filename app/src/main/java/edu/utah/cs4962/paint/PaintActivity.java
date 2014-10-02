@@ -9,15 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-
+// keep count of points and set slider to x amount of points when animating redraw that many points
 public class PaintActivity extends Activity {
 
     PaintAreaView _paintAreaView;
     PaletteView _paletteView;
     boolean _paintSelected = false;
+    boolean _displayWelcome = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +61,22 @@ public class PaintActivity extends Activity {
 
         if(rotation  == 0 ){
             rootLayout.setOrientation(LinearLayout.VERTICAL);
-            rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
-            rootLayout.addView(_paletteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
+            rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
+            rootLayout.addView(_paletteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
         }
         else{
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
-            rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
-            rootLayout.addView(_paletteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .5f));
+            rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
+            rootLayout.addView(_paletteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
 
         }
-
+        if(!_displayWelcome){
+            Toast.makeText(PaintApplication.getAppContext(), "Welcome to Paint", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PaintApplication.getAppContext(), "Drag paints on-top of another to mix", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PaintApplication.getAppContext(), "Drag paints on-top of paint area to remove", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PaintApplication.getAppContext(), "Otherwise tap a paint and begin", Toast.LENGTH_SHORT).show();
+            _displayWelcome = true;
+        }
 
         setContentView(rootLayout);
 
@@ -76,6 +84,7 @@ public class PaintActivity extends Activity {
 
     @Override
     protected void onResume(){
+        _displayWelcome = false;
         super.onResume();
 //        if(PaintApplication.get_canvas() != null)
 //         _paintAreaView.onDraw(PaintApplication.get_canvas());

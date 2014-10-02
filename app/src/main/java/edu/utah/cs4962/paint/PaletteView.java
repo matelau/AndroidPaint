@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * A subclass of ViewGroup that overrides onDraw to draw a painter’s palette
  board, and maintains a collection of paints. The class should offer addColor and removeColor
@@ -30,6 +32,7 @@ import android.widget.Toast;
 public class PaletteView extends ViewGroup {
     RectF _contentRect;
     PaintView _transformedView;
+    float _radius;
 
     public PaletteView(Context context){
         super(context);
@@ -43,12 +46,17 @@ public class PaletteView extends ViewGroup {
         Float y = event.getY();
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             _transformedView = detectPaintTouched(x,y);
+            if(_transformedView != null){
+                _transformedView.setLocation(new PointF(x,y));
+            }
             return false;
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE)
         {
             //TODO take account for swipes not on a paintView
             //take control in onTouchEvent
+//            _transformedView.setX(x);
+//            _transformedView.setY(y);
             return onTouchEvent(event);
         }
         else if(event.getAction() == MotionEvent.ACTION_UP)
@@ -85,27 +93,42 @@ public class PaletteView extends ViewGroup {
         Float x = event.getX();
         Float y = event.getY();
 
-
         if(_transformedView != null && (event.getAction() == MotionEvent.ACTION_UP )){
             // check if dragged on top of another paint
             PaintView pv = detectPaintTouched(x,y);
-            if(pv != null){
+            if(pv != null)
+            {
                 int color1 = pv.getColor();
                 int color2 = _transformedView.getColor();
-                if(pv.getColor() != _transformedView.getColor()){
+                if(pv.getColor() != _transformedView.getColor())
+                {
                     //add color
                     addColor(color1, color2);
-                    //remove pv and transformed
                     Log.i("PaletteView", "onTouchEvent - Need to Add color");
                     return true;
                 }
                 else{
 
+
                     return false;
                 }
-
             }
 
+            else
+            {
+                //check if moved outside of the palette for remove
+                if(!inCircle(x,y) )
+                {
+                    removeColor( _transformedView.getColor());
+                    Log.i("PaletteView", "onTouchEvent - Removed color");
+                    return true;
+                }
+            }
+
+            //remove transformed
+//            removeView(_transformedView);
+//            addView(_transformedView);
+//            invalidate();
         }
         return false;
 
@@ -124,27 +147,24 @@ public class PaletteView extends ViewGroup {
         Paint palPaint = new Paint();
         palPaint.setColor(0xff8b4513); // brown
         palPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        float _radius = Math.min(_contentRect.width() * 0.5f, _contentRect.height() * 0.5f);
+        _radius = Math.min(_contentRect.width() * 0.5f, _contentRect.height() * 0.5f);
         PointF center = new PointF(_contentRect.centerX(), _contentRect.centerY());
         canvas.drawOval(_contentRect, palPaint);
 
 
         // remove corner
-        _contentRect = new RectF(50,50,50,50);
+//        RectF lilRect = new RectF(50,50,50,50);
         Paint cornerPaint = new Paint();
         cornerPaint.setColor(Color.BLACK);
         cornerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         canvas.drawCircle(center.x+(_radius/1.3f), center.y-(_radius/(1.3f)),_radius/4, cornerPaint);
 
-
     }
 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-        //TODO: implement iterate through all the children then report how big you need to be
-        // getChildAt() call measure, getChildCount()
 
         int widthSpec = MeasureSpec.getSize(widthMeasureSpec);
         int heightSpec = MeasureSpec.getSize(heightMeasureSpec);
@@ -215,7 +235,7 @@ public class PaletteView extends ViewGroup {
     }
 
     /**
-     *
+     * mixes color and color2
      * @param color
      * @param color2
      */
@@ -248,18 +268,59 @@ public class PaletteView extends ViewGroup {
         });
 
         addView(pv);
-
-
-
-
-        Toast t = Toast.makeText(PaintApplication.getAppContext(), "color1: "+color+ " color2: "+color2, Toast.LENGTH_SHORT);
-        t.show();
-//        onLayout(true);
         invalidate();
     }
 
-    protected void removeColor(Color color){
-        //TODO: implement
+
+    protected boolean inCircle(Float x, Float y){
+        Float cx = _contentRect.centerX();
+        Float cy = _contentRect.centerY();
+        double rad = _radius;
+
+//        distance formula
+        double xDist = Math.pow((x - cx), 2);
+        double yDist = Math.pow((y - cy), 2);
+        double dist = Math.sqrt(xDist + yDist);
+        if(dist > rad){
+            return false;
+        }
+        else
+            return true;
+
+    }
+
+    /**
+     * Removes color
+     * @param color
+     */
+    protected void removeColor(int color){
+        //Remove from PaintApplication
+        ArrayList<Integer> colors = PaintApplication.get_paintColors();
+        ArrayList<Integer> updateColors = new ArrayList<Integer>();
+        if(colors.size() > 3){
+            for(int i = 0; i < colors.size(); i++){
+                if(colors.get(i).equals(color)){
+                    //dont save
+                }
+                else{
+                    updateColors.add(colors.get(i));
+                }
+            }
+            PaintApplication.set_paintColors(updateColors);
+            PaintView pv = null;
+            for(int i = 0; i < getChildCount(); i++){
+                PaintView current = (PaintView) getChildAt(i);
+                if(current.getColor() == color){
+                    pv = current;
+                }
+            }
+            removeView(pv);
+            invalidate();
+        }
+        else{
+            Toast.makeText(getContext(), "You must keep at least three paints on the palette", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 

@@ -21,8 +21,28 @@ public class PaintView extends View {
     int _color;
     RectF _contentRect;
     float _radius;
-    OnSplotchTouchListener _onSplotchTouchListener = null;
     boolean _active = false;
+
+    public PointF getLocation() {
+        return location;
+    }
+
+    public void setLocation(PointF location) {
+        this.location = location;
+    }
+
+    PointF location;
+    OnSplotchTouchListener _onSplotchTouchListener = null;
+
+    public boolean is_active() {
+        return _active;
+    }
+
+    public void set_active(boolean _active) {
+        this._active = _active;
+    }
+
+
 
 
     /* Constructor */
@@ -36,10 +56,6 @@ public class PaintView extends View {
     {
         public void onSplotchTouched(PaintView v);
     }
-
-
-
-
 
     public int getColor(){
         return _color;
@@ -159,11 +175,6 @@ public class PaintView extends View {
 
         }
         Paint blotPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        if(_active){
-//            blotPaint.
-//        }
-
-
         blotPaint.setColor(_color);
         canvas.drawPath(blotPath, blotPaint);
 
