@@ -63,6 +63,20 @@ public class PaintAreaView extends View {
         canvas.drawBitmap(_mBitmap, 0, 0, null);
     }
 
+    @Override
+    public void draw(Canvas canvas){
+        if(_mBitmap != null ){
+            canvas.drawBitmap(_mBitmap, 0, 0, null);
+        }
+
+    }
+
+    protected void clear(){
+        _points.clear();
+        _mBitmap = null;
+        invalidate();
+    }
+
 
 
 

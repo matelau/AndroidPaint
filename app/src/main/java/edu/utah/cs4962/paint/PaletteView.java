@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class PaletteView extends ViewGroup {
     RectF _contentRect;
-    PaintView _transformedView;
+    PaintView _transformedView = null;
     float _radius;
 
     public PaletteView(Context context){
@@ -41,12 +41,14 @@ public class PaletteView extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event){
-        Log.i("PaletteView", "onInterceptTouchEvent - source: "+ event.getSource());
+
         Float x = event.getX();
         Float y = event.getY();
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             _transformedView = detectPaintTouched(x,y);
+
             if(_transformedView != null){
+                Log.i("PaletteView", "onInterceptTouchEvent - source:  "+_transformedView.getColor());
                 _transformedView.setLocation(new PointF(x,y));
             }
             return false;
@@ -55,8 +57,11 @@ public class PaletteView extends ViewGroup {
         {
             //TODO take account for swipes not on a paintView
             //take control in onTouchEvent
-//            _transformedView.setX(x);
-//            _transformedView.setY(y);
+            if(_transformedView != null){
+                _transformedView.setX(x);
+                _transformedView.setY(y);
+            }
+
             return onTouchEvent(event);
         }
         else if(event.getAction() == MotionEvent.ACTION_UP)
@@ -89,11 +94,11 @@ public class PaletteView extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
-        Log.i("PaletteView", "onTouchEvent");
+//        Log.i("PaletteView", "onTouchEvent");
         Float x = event.getX();
         Float y = event.getY();
 
-        if(_transformedView != null && (event.getAction() == MotionEvent.ACTION_UP )){
+        if(_transformedView != null && (event.getAction() == MotionEvent.ACTION_MOVE)){
             // check if dragged on top of another paint
             PaintView pv = detectPaintTouched(x,y);
             if(pv != null)
@@ -104,31 +109,34 @@ public class PaletteView extends ViewGroup {
                 {
                     //add color
                     addColor(color1, color2);
-                    Log.i("PaletteView", "onTouchEvent - Need to Add color");
+                    removeColor(_transformedView.getColor());
+                    addColor(_transformedView.getColor());
+                    _transformedView = null;
+                    Log.i("PaletteView", "onTouchEvent - Added color "+color1);
                     return true;
                 }
                 else{
-
-
                     return false;
                 }
             }
 
-            else
+            else if (!inCircle(x, y))
             {
-                //check if moved outside of the palette for remove
-                if(!inCircle(x,y) )
-                {
-                    removeColor( _transformedView.getColor());
-                    Log.i("PaletteView", "onTouchEvent - Removed color");
-                    return true;
-                }
+                removeColor( _transformedView.getColor());
+                Log.i("PaletteView", "onTouchEvent - Removed color");
+                return true;
             }
 
-            //remove transformed
-//            removeView(_transformedView);
-//            addView(_transformedView);
-//            invalidate();
+            else if (event.getAction() == MotionEvent.ACTION_UP){
+                //place paint back
+                if(_transformedView != null){
+                    addColor(_transformedView.getColor());
+                    _transformedView = null;
+                }
+
+                return true;
+            }
+
         }
         return false;
 
@@ -271,11 +279,36 @@ public class PaletteView extends ViewGroup {
         invalidate();
     }
 
+    protected void addColor(int color){
+        removeView(_transformedView);
+        PaintView pv = new PaintView(PaintApplication.getAppContext());
+        //store for rotation
+        PaintApplication.add_paintColor(color);
+        pv.setColor(color);
+        pv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundResource(android.R.drawable.list_selector_background);
+                int selected =((PaintView) v).getColor();
+                PaintApplication.set_selectedPaint(selected);
+            }
+        });
 
+        addView(pv);
+        invalidate();
+    }
+
+
+    /**
+     * determines where points x, y are in the radius of the palette
+     * @param x
+     * @param y
+     * @return
+     */
     protected boolean inCircle(Float x, Float y){
         Float cx = _contentRect.centerX();
         Float cy = _contentRect.centerY();
-        double rad = _radius;
+        double rad = _radius+(getWidth()/4);
 
 //        distance formula
         double xDist = Math.pow((x - cx), 2);
@@ -299,10 +332,7 @@ public class PaletteView extends ViewGroup {
         ArrayList<Integer> updateColors = new ArrayList<Integer>();
         if(colors.size() > 3){
             for(int i = 0; i < colors.size(); i++){
-                if(colors.get(i).equals(color)){
-                    //dont save
-                }
-                else{
+                if(!colors.get(i).equals(color)){
                     updateColors.add(colors.get(i));
                 }
             }
