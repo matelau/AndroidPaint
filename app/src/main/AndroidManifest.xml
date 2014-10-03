@@ -29,6 +29,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.utah.cs4962.paint.PaintActivity" />
         </activity>
+        <activity
+            android:name=".WatchActivity"
+            android:label="@string/title_activity_watch"
+            android:parentActivityName=".PaintActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.utah.cs4962.paint.PaintActivity" />
+        </activity>
     </application>
 
 </manifest>

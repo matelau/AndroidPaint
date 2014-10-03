@@ -44,33 +44,9 @@ public class PaintAreaView extends View {
             PaintApplication.set_canvas(canvas);
             invalidate();
         }
-//        if(_mBitmap == null){
-//            _mBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.RGB_565);
-//            _canvas = new Canvas(_mBitmap);
-//
-//        }
-//        _canvas.setBitmap(_mBitmap);
-//
-//
-//        if(_points.size() != 0){
-//            PlotColorTuple pt = new PlotColorTuple(PaintApplication.get_selectedPaint(), _points);
-//            pt.drawDoodles(_canvas);
-//        }
-//
-//        if(PaintApplication.get_drawings() != null){
-//            _doodles = PaintApplication.get_drawings();
-//            if(_doodles.size() != 0){
-//                //iterate through doodles
-//                for(int i = 0; i < _doodles.size(); i++){
-//                    _doodles.get(i).drawDoodles(_canvas);
-//                }
-//            }
-//
-//            PaintApplication.set_canvas(_canvas);
-//        }
-//        canvas.drawBitmap(_mBitmap, 0, 0, null);
     }
-//
+
+
     @Override
     public void draw(Canvas canvas){
         _pct = PaintApplication.get_points();
@@ -84,8 +60,8 @@ public class PaintAreaView extends View {
     }
 
     protected void clear(){
-        _points.clear();
-        _mBitmap = null;
+        _pct.clear();
+        PaintApplication.set_points(_pct);
         invalidate();
     }
 
@@ -113,24 +89,6 @@ public class PaintAreaView extends View {
             PaintApplication.set_points(_pct);
         }
         invalidate();
-//        _points.add(new PointF(x,y));
-//
-//        if (event.getAction() == MotionEvent.ACTION_DOWN){
-//            //Store points
-//            _points.clear();
-//        }
-//
-//        if(PaintApplication.get_drawings() != null){
-//            ArrayList<PlotColorTuple> saved = PaintApplication.get_drawings();
-//            saved.add(new PlotColorTuple(PaintApplication.get_selectedPaint(), _points));
-//            PaintApplication.set_drawings(saved);
-//        }
-//        else{
-//            ArrayList<PlotColorTuple> doodles = new ArrayList<PlotColorTuple>();
-//            doodles.add(new PlotColorTuple(PaintApplication.get_selectedPaint(), _points));
-//            PaintApplication.set_drawings(doodles);
-//        }
-//        invalidate();
 
         return true;
     }

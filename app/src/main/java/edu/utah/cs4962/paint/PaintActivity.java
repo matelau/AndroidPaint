@@ -15,15 +15,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import java.util.ArrayList;
-
 // keep count of points and set slider to x amount of points when animating redraw that many points
 public class PaintActivity extends Activity {
 
     PaintAreaView _paintAreaView;
     PaletteView _paletteView;
-    boolean _paintSelected = false;
-    boolean _displayedWelcome = false;
+    boolean _paintMode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +28,8 @@ public class PaintActivity extends Activity {
         ActionBar ab = getActionBar();
         Button selectPaint = new Button(this);
         selectPaint.setText("Choose Paint");
+        Button watchMode= new Button(this);
+        watchMode.setText("Review");
         if(PaintApplication._selectedPaint != Color.BLACK){
             selectPaint.setBackgroundColor(PaintApplication._selectedPaint);
         }
@@ -38,14 +37,18 @@ public class PaintActivity extends Activity {
             selectPaint.setTextColor(Color.WHITE);
             selectPaint.setBackgroundColor(Color.BLACK);
         }
-        selectPaint.setOnClickListener(new Button.OnClickListener(){
+        selectPaint.setOnClickListener(new Button.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(PaintApplication.getAppContext(), PaletteActivity.class));
             }
         });
-        ab.setCustomView(selectPaint);
+        LinearLayout abll = new LinearLayout(this);
+        abll.setOrientation(LinearLayout.HORIZONTAL);
+        abll.addView(selectPaint);
+        abll.addView(watchMode);
+        ab.setCustomView(abll);
         ab.setDisplayShowCustomEnabled(true);
         ab.show();
         LinearLayout rootLayout = new LinearLayout(this);
@@ -53,53 +56,18 @@ public class PaintActivity extends Activity {
         Display display = ((WindowManager) getBaseContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int rotation = display.getRotation();
 
-//        _paletteView = new PaletteView(this);
-//        _paletteView.setBackgroundColor(Color.BLACK);
-//
-//        ArrayList<Integer> paints = PaintApplication.get_paintColors();
-//
-//
-//        for ( int splotchIndex = 0; splotchIndex < paints.size(); splotchIndex++)
-//        {
-//            PaintView paintView = new PaintView(this);
-////            paintView.setPadding(10,10,10,10);
-//            paintView.setColor(PaintApplication.get_paintColors().get(splotchIndex));
-//            //set full transparency for background
-//            paintView.setBackgroundColor(Color.green(0x80000000));
-//            paintView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    _paintSelected = true;
-//                    v.setBackgroundResource(android.R.drawable.list_selector_background);
-//                    int selected =((PaintView) v).getColor();
-//                    PaintApplication.set_selectedPaint(selected);
-//                }
-//            });
-//            _paletteView.addView(paintView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//
-//        }
 
         _paintAreaView = new PaintAreaView(this);
-
 
         if(rotation  == 0 ){
             rootLayout.setOrientation(LinearLayout.VERTICAL);
             rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
-//            rootLayout.addView(_paletteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
         }
         else{
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
             rootLayout.addView(_paintAreaView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
-//            rootLayout.addView(_paletteView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, .4f));
 
         }
-//        if(!_displayedWelcome){
-//            Toast.makeText(PaintApplication.getAppContext(), "Welcome to Paint", Toast.LENGTH_SHORT).show();
-//            Toast.makeText(PaintApplication.getAppContext(), "Drag paints on-top of another to mix", Toast.LENGTH_SHORT).show();
-//            Toast.makeText(PaintApplication.getAppContext(), "Drag paints on-top of paint area to remove", Toast.LENGTH_SHORT).show();
-//            Toast.makeText(PaintApplication.getAppContext(), "Otherwise tap a paint and begin", Toast.LENGTH_SHORT).show();
-//            _displayedWelcome = true;
-//        }
 
         setContentView(rootLayout);
 
@@ -118,10 +86,8 @@ public class PaintActivity extends Activity {
         //TODO: implement save and load
         if(item.getTitle() == "Clear"){
             _paintAreaView.clear();
-            PaintApplication.set_drawings(new ArrayList<PlotColorTuple>());
-
-
         }
+
         return super.onMenuItemSelected(featureId, item);
     }
 
