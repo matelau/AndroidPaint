@@ -7,13 +7,13 @@
         android:targetSdkVersion="19" />
 
     <application
-        android:name=".PaintApplication"
+        android:name=".models.PaintApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".PaintActivity"
+            android:name=".controllers.PaintActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,17 +22,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PaletteActivity"
+            android:name=".controllers.PaletteActivity"
             android:label="@string/title_activity_paltte"
-            android:parentActivityName=".PaintActivity" >
+            android:parentActivityName=".controllers.PaintActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.utah.cs4962.paint.PaintActivity" />
         </activity>
         <activity
-            android:name=".WatchActivity"
+            android:name=".controllers.WatchActivity"
             android:label="@string/title_activity_watch"
-            android:parentActivityName=".PaintActivity" >
+            android:parentActivityName=".controllers.PaintActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.utah.cs4962.paint.PaintActivity" />
