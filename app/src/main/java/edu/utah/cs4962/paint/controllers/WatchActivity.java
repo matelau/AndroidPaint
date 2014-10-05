@@ -91,8 +91,7 @@ public class WatchActivity extends Activity {
                @Override
                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     if(fromUser){
-                        _sb.setProgress(progress);
-                        _paintAreaView.set_pctAnim(portionOfPts(0, progress));
+                        updateSeekandPAView(progress);
                     }
                }
 
@@ -106,7 +105,6 @@ public class WatchActivity extends Activity {
 
                }
        });
-
 
         rootLayout.addView(_sb);
         setContentView(rootLayout);
@@ -127,9 +125,7 @@ public class WatchActivity extends Activity {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int progress = (Integer) animation.getAnimatedValue();
-                ArrayList<PointColorTuple> pctAnim =  portionOfPts(0, progress);
-                _sb.setProgress(progress);
-                _paintAreaView.set_pctAnim(pctAnim);
+                updateSeekandPAView(progress);
             }
         });
         _seekAnimator.start();
@@ -152,5 +148,23 @@ public class WatchActivity extends Activity {
         return toAnim;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(PaintApplication.getSeekPos() != 0){
+            int progress = PaintApplication.getSeekPos();
+            updateSeekandPAView(progress);
+        }
+    }
 
+    /**
+     * Updates seekbar and PaintAreaView
+     * @param progress
+     */
+    private void updateSeekandPAView(int progress){
+        _sb.setProgress(progress);
+        PaintApplication.setSeekPos(progress);
+        _paintAreaView.set_pctAnim(portionOfPts(0, progress));
+
+    }
 }

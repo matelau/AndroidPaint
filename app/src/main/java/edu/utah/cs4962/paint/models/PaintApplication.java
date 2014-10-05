@@ -7,15 +7,12 @@ import android.graphics.Color;
 
 import java.util.ArrayList;
 
-import edu.utah.cs4962.paint.misc.PlotColorTuple;
-
 /**
  * Maintains the Global State of the Application
  */
 public class PaintApplication  extends Application {
 
     private static Context context;
-    protected static ArrayList<PlotColorTuple> _drawings;
     protected static ArrayList<Integer> _paintColors = new ArrayList<Integer>(){{
         add(Color.RED);
         add(Color.GREEN);
@@ -27,19 +24,24 @@ public class PaintApplication  extends Application {
     protected static int _selectedPaint = Color.BLACK;
     protected static boolean _inPaintMode = true;
     protected static Canvas _canvas = null;
+    protected static int seekPos = 0;
+    protected static ArrayList<PointColorTuple> _points = new ArrayList<PointColorTuple>();
+    protected static ArrayList<PointColorTuple> _pointsToAnim = new ArrayList<PointColorTuple>();
 
-    static {
-        _drawings = new ArrayList<PlotColorTuple>();
+
+
+    public static int getSeekPos() {
+        return seekPos;
     }
 
-    protected static ArrayList<PointColorTuple> _points = new ArrayList<PointColorTuple>();
+    public static void setSeekPos(int seekPos) {
+        PaintApplication.seekPos = seekPos;
+    }
 
-    protected static ArrayList<PointColorTuple> _pointsToAnim = new ArrayList<PointColorTuple>();
 
     public static ArrayList<PointColorTuple> get_pointsToAnim() {
         return _pointsToAnim;
     }
-
     public static void set_pointsToAnim(ArrayList<PointColorTuple> _pointsToAnim) {
         PaintApplication._pointsToAnim = _pointsToAnim;
     }
