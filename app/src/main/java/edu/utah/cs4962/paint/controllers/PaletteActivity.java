@@ -17,15 +17,16 @@ import edu.utah.cs4962.paint.views.PaletteView;
 
 
 public class PaletteActivity extends Activity {
-    PaletteView _paletteView;
+     protected PaletteView _paletteView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState == null) {
+            //setup default palette
          _paletteView = new PaletteView(this);
         _paletteView.setBackgroundColor(Color.BLACK);
-
         ArrayList<Integer> paints = PaintApplication.get_paintColors();
 
 
@@ -44,11 +45,9 @@ public class PaletteActivity extends Activity {
                 }
             });
             _paletteView.addView(paintView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
         }
 
             setContentView(_paletteView);
-
 
         }
     }

@@ -31,23 +31,21 @@ import edu.utah.cs4962.paint.views.PaintAreaView;
 
 
 /**
- * TODO: Persistence: The UI in your app should restore to its current state when the device is rotated.
- * Additionally, the user’s drawing should be saved using regular file output, so if they were to kill
- * the app and start it again, their drawing would be restored (the UI may reset to a default,
- * though). Consider using GSON, as most Android classes, like PointF, are not serializable.
+ * Central Activity to Application creates a blank palette and allows a user to choose paint
  */
 public class PaintActivity extends Activity {
 
-    PaintAreaView _paintAreaView;
+    protected PaintAreaView _paintAreaView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Action Bar
+        //Setup Action Bar with Options
         ActionBar ab = getActionBar();
         Button selectPaint = new Button(this);
         selectPaint.setText("Choose Paint");
+        //Sets the buttons color to reflect color choice
         if(PaintApplication.get_selectedPaint() != Color.BLACK){
             selectPaint.setBackgroundColor(PaintApplication.get_selectedPaint());
         }
@@ -62,6 +60,7 @@ public class PaintActivity extends Activity {
                 startActivity(new Intent(PaintApplication.getAppContext(), PaletteActivity.class));
             }
         });
+        //Button to allow a user to watch
         Button watchMode= new Button(this);
         watchMode.setText("Review");
         watchMode.setOnClickListener(new Button.OnClickListener() {
@@ -98,7 +97,6 @@ public class PaintActivity extends Activity {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        //TODO: implement save and load
         if(item.getTitle() == "Clear"){
             _paintAreaView.clear();
         }
